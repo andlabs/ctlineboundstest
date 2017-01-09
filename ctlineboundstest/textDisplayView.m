@@ -1,6 +1,12 @@
 // 8 january 2017
 #import "textDisplayView.h"
 
+@interface textDisplayView ()
+@property (weak) IBOutlet NSButton *showBaselines;
+@property (weak) IBOutlet NSButton *showTypographicBounds;
+@property (weak) IBOutlet NSButton *show108Bounds;
+@end
+
 @implementation textDisplayView
 
 - (id)initWithFrame:(NSRect)r
@@ -53,13 +59,113 @@
 	return fs;
 }
 
+- (CFRange)strRange
+{
+	CFRange range;
+	
+	range.location = 0;
+	range.length = [self->str length];
+	return range;
+}
+
+- (void)setStroke:(CGContextRef)c r:(CGFloat)r g:(CGFloat)g b:(CGFloat)b
+{
+	static const CGFloat dashes[] = { 5, 2 };
+	
+	CGContextSetRGBStrokeColor(c, r, g, b, 0.5);
+	CGContextSetLineWidth(c, 1);
+	CGContextSetLineDash(c, 0, dashes, 2);
+}
+
+- (void)drawGuides:(CGContextRef)c for:(CTFrameRef)frame
+{
+	BOOL drawAnything;
+	BOOL showBaselines, showTypographicBounds, show108Bounds;
+	CFArrayRef lines;
+	CFIndex i, n;
+	CGPoint *origins;
+	CTLineRef line;
+
+	drawAnything = NO;
+	showBaselines = [self.showBaselines state] != NSOffState;
+	drawAnything = drawAnything || showBaselines;
+	showTypographicBounds = [self.showTypographicBounds state] != NSOffState;
+	drawAnything = drawAnything || showTypographicBounds;
+	show108Bounds = [self.show108Bounds state] != NSOffState;
+	drawAnything = drawAnything || show108Bounds;
+	if (!drawAnything)
+		return;
+
+	lines = CTFrameGetLines(frame);
+	n = CFArrayGetCount(lines);
+	if (n == 0)
+		return;
+	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
+	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
+	
+	if (showBaselines) {
+		CGFloat width;
+		
+		CGContextSaveGState(c);
+		[self setStroke:c r:0.0 g:0.0 b:1.0];
+		for (i = 0; i < n; i++) {
+			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
+			width = CTLineGetTypographicBounds(line, NULL, NULL, NULL);
+			CGContextBeginPath(c);
+			CGContextMoveToPoint(c, origins[i].x, origins[i].y);
+			CGContextAddLineToPoint(c, origins[i].x + width, origins[i].y);
+			CGContextStrokePath(c);
+		}
+		CGContextRestoreGState(c);
+	}
+	
+	if (showTypographicBounds) {
+		CGFloat width, ascent, descent, leading;
+		CGRect r;
+		
+		CGContextSaveGState(c);
+		[self setStroke:c r:1.0 g:0.0 b:0.0];
+		for (i = 0; i < n; i++) {
+			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
+			width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+			r.origin.x = origins[i].x;
+			r.origin.y = origins[i].y - (descent + leading);
+			r.size.width = width;
+			r.size.height = ascent + descent + leading;
+			CGContextBeginPath(c);
+			CGContextAddRect(c, r);
+			CGContextStrokePath(c);
+		}
+		CGContextRestoreGState(c);
+	}
+	
+	if (show108Bounds) {
+		CGRect r;
+
+		CGContextSaveGState(c);
+		[self setStroke:c r:0.0 g:1.0 b:0.0];
+		for (i = 0; i < n; i++) {
+			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
+			r = CTLineGetBoundsWithOptions(line, 0);
+			r.origin.x += origins[i].x;
+			r.origin.y += origins[i].y;
+			CGContextBeginPath(c);
+			CGContextAddRect(c, r);
+			CGContextStrokePath(c);
+		}
+		CGContextRestoreGState(c);
+	}
+	
+	free(origins);
+}
+
 - (void)drawRect:(NSRect)r
 {
 	CGContextRef c;
 	CTFrameRef frame;
 	CFRange range;
 	CGPathRef path;
-		
+	
 	c = (CGContextRef) [[NSGraphicsContext currentContext] graphicsPort];
 	
 	CGContextSaveGState(c);
@@ -67,17 +173,17 @@
 	CGContextScaleCTM(c, 1.0, -1.0);
 	CGContextSetTextMatrix(c, CGAffineTransformIdentity);
 	
-	range.location = 0;
-	range.length = [self->str length];
+	range = [self strRange];
 	path = CGPathCreateWithRect([self bounds], NULL);
 	frame = CTFramesetterCreateFrame(self->framesetter,
 		range,
 		path,
 		NULL);
 	CTFrameDraw(frame, c);
+	[self drawGuides:c for:frame];
 	CFRelease(path);
 	CFRelease(frame);
-	
+
 	CGContextRestoreGState(c);
 }
 
@@ -90,8 +196,7 @@
 	if (self->framesetter != NULL)
 		CFRelease(self->framesetter);
 	self->framesetter = [self mkFramesetter];
-	range.location = 0;
-	range.length = [self->str length];
+	range = [self strRange];
 	frameSize = CTFramesetterSuggestFrameSizeWithConstraints(self->framesetter, range,
 		NULL,
 		CGSizeMake(width, CGFLOAT_MAX),
@@ -122,6 +227,11 @@
 	
 	self->font = [fm convertFont:self->font];
 	[self recomputeFrameSize:[self frame].size.width];
+}
+
+- (IBAction)checkboxToggled:(id)sender
+{
+	[self setNeedsDisplay:YES];
 }
 
 @end

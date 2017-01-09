@@ -16,6 +16,8 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
+                <outlet property="scrollView" destination="1v6-j8-s34" id="mXd-OB-5tV"/>
+                <outlet property="scrollZoom" destination="Up6-WF-Fow" id="izK-QS-bPu"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -701,15 +703,20 @@
                             <outlet property="delegate" destination="ooP-YL-O3a" id="D16-Qu-QfI"/>
                         </connections>
                     </textField>
-                    <scrollView misplaced="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1v6-j8-s34">
-                        <rect key="frame" x="19" y="19" width="333" height="292"/>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" allowsMagnification="YES" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1v6-j8-s34">
+                        <rect key="frame" x="20" y="20" width="338" height="290"/>
                         <clipView key="contentView" id="Jcl-xO-zIG">
-                            <rect key="frame" x="1" y="1" width="331" height="290"/>
+                            <rect key="frame" x="1" y="1" width="336" height="288"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ooP-YL-O3a" customClass="textDisplayView">
-                                    <rect key="frame" x="0.0" y="0.0" width="331" height="290"/>
+                                    <rect key="frame" x="0.0" y="-2" width="336" height="290"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                    <connections>
+                                        <outlet property="show108Bounds" destination="FF6-oK-od2" id="B7p-x3-jCn"/>
+                                        <outlet property="showBaselines" destination="1mQ-AV-q5e" id="Wuz-SW-tsI"/>
+                                        <outlet property="showTypographicBounds" destination="pio-wm-ESv" id="od1-gi-8Wq"/>
+                                    </connections>
                                 </customView>
                             </subviews>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -718,22 +725,71 @@
                             <rect key="frame" x="-100" y="-100" width="331" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="cjV-mo-b9e">
-                            <rect key="frame" x="316" y="1" width="16" height="290"/>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="cjV-mo-b9e">
+                            <rect key="frame" x="321" y="1" width="16" height="288"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="1mQ-AV-q5e">
+                        <rect key="frame" x="364" y="294" width="73" height="18"/>
+                        <buttonCell key="cell" type="check" title="Baseline" bezelStyle="regularSquare" imagePosition="left" inset="2" id="oRX-6Z-O3z">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxToggled:" target="ooP-YL-O3a" id="ObU-BV-qmn"/>
+                        </connections>
+                    </button>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="pio-wm-ESv">
+                        <rect key="frame" x="364" y="274" width="98" height="18"/>
+                        <buttonCell key="cell" type="check" title="Typographic" bezelStyle="regularSquare" imagePosition="left" inset="2" id="gFg-kr-bq6">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxToggled:" target="ooP-YL-O3a" id="ymh-CH-YE0"/>
+                        </connections>
+                    </button>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="FF6-oK-od2">
+                        <rect key="frame" x="364" y="254" width="98" height="18"/>
+                        <buttonCell key="cell" type="check" title="10.8 Bounds" bezelStyle="regularSquare" imagePosition="left" inset="2" id="22a-3K-ja6">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxToggled:" target="ooP-YL-O3a" id="8x8-7a-RrL"/>
+                        </connections>
+                    </button>
+                    <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Up6-WF-Fow">
+                        <rect key="frame" x="364" y="18" width="98" height="21"/>
+                        <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="KRP-HB-CFK"/>
+                        <connections>
+                            <action selector="setMagnification:" target="Voe-Tx-rLC" id="ZcR-Iw-1Qm"/>
+                        </connections>
+                    </slider>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="1mQ-AV-q5e" firstAttribute="top" secondItem="7uG-Ph-jOj" secondAttribute="bottom" constant="8" symbolic="YES" id="0IG-HP-2uK"/>
+                    <constraint firstItem="FF6-oK-od2" firstAttribute="top" secondItem="pio-wm-ESv" secondAttribute="bottom" constant="6" symbolic="YES" id="19I-Go-fzj"/>
+                    <constraint firstItem="pio-wm-ESv" firstAttribute="top" secondItem="1mQ-AV-q5e" secondAttribute="bottom" constant="6" symbolic="YES" id="FpY-qc-uXj"/>
                     <constraint firstAttribute="bottom" secondItem="1v6-j8-s34" secondAttribute="bottom" constant="20" symbolic="YES" id="GjA-BH-M2b"/>
+                    <constraint firstAttribute="trailing" secondItem="pio-wm-ESv" secondAttribute="trailing" constant="20" symbolic="YES" id="L7s-0j-zYO"/>
+                    <constraint firstItem="pio-wm-ESv" firstAttribute="leading" secondItem="1mQ-AV-q5e" secondAttribute="leading" id="NEr-JG-gZR"/>
                     <constraint firstItem="7uG-Ph-jOj" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="PE3-jJ-fcS"/>
+                    <constraint firstAttribute="bottom" secondItem="Up6-WF-Fow" secondAttribute="bottom" constant="20" symbolic="YES" id="R0K-JS-Xhz"/>
                     <constraint firstItem="7uG-Ph-jOj" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="ScA-8W-c3t"/>
                     <constraint firstItem="1v6-j8-s34" firstAttribute="top" secondItem="7uG-Ph-jOj" secondAttribute="bottom" constant="8" symbolic="YES" id="TmU-Iz-qvU"/>
+                    <constraint firstItem="1mQ-AV-q5e" firstAttribute="leading" secondItem="1v6-j8-s34" secondAttribute="trailing" constant="8" symbolic="YES" id="Tqu-lz-ned"/>
+                    <constraint firstItem="Up6-WF-Fow" firstAttribute="width" secondItem="FF6-oK-od2" secondAttribute="width" id="Zem-NS-yQf"/>
+                    <constraint firstItem="Up6-WF-Fow" firstAttribute="leading" secondItem="FF6-oK-od2" secondAttribute="leading" id="b6d-Fh-JY6"/>
                     <constraint firstAttribute="trailing" secondItem="7uG-Ph-jOj" secondAttribute="trailing" constant="20" symbolic="YES" id="eRX-q3-ZCS"/>
                     <constraint firstItem="1v6-j8-s34" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="esI-kY-2OM"/>
-                    <constraint firstAttribute="trailing" secondItem="1v6-j8-s34" secondAttribute="trailing" constant="128" id="uXt-Xw-39g"/>
+                    <constraint firstItem="FF6-oK-od2" firstAttribute="leading" secondItem="pio-wm-ESv" secondAttribute="leading" id="f2M-UH-aeK"/>
+                    <constraint firstAttribute="trailing" secondItem="Up6-WF-Fow" secondAttribute="trailing" constant="20" symbolic="YES" id="u2T-es-6ZR"/>
+                    <constraint firstAttribute="trailing" secondItem="FF6-oK-od2" secondAttribute="trailing" constant="20" symbolic="YES" id="xqZ-C0-dm8"/>
                 </constraints>
             </view>
         </window>
+        <userDefaultsController representsSharedInstance="YES" id="RRe-iW-Zxs"/>
     </objects>
 </document>
