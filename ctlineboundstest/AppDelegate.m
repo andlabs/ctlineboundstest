@@ -2,9 +2,7 @@
 #import "AppDelegate.h"
 
 // TODOs
-// - add an option for having line and paragraph styles taken into consideration
 // - run a test to see where the line differences don't match ascent+descent+leading from typographic bounds is the largest positive
-// - take a screenshot of the largest 10.8 difference
 
 @interface AppDelegate ()
 @property (weak) IBOutlet NSWindow *window;

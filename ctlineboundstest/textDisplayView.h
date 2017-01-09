@@ -10,4 +10,5 @@
 - (void)controlTextDidChange:(NSNotification *)obj;
 - (void)changeFont:(id)sender;
 - (IBAction)checkboxToggled:(id)sender;
+- (IBAction)paragraphStyleCheckboxToggled:(id)sender;
 @end

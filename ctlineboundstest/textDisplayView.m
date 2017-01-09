@@ -5,6 +5,11 @@
 @property (weak) IBOutlet NSButton *showBaselines;
 @property (weak) IBOutlet NSButton *showTypographicBounds;
 @property (weak) IBOutlet NSButton *show108Bounds;
+
+@property (weak) IBOutlet NSButton *useParagraphSpaceBefore;
+@property (weak) IBOutlet NSButton *useLineHeight;
+@property (weak) IBOutlet NSButton *useLineSpacing;
+@property (weak) IBOutlet NSButton *useParagraphSpacing;
 @end
 
 @implementation textDisplayView
@@ -40,9 +45,54 @@
 	return YES;
 }
 
+- (CTParagraphStyleRef)mkParagraphStyle
+{
+	CTParagraphStyleSetting settings[20];
+	size_t i;
+	CGFloat thirty = 30.0;
+	CGFloat two = 2.0;
+	
+	memset(settings, 0, 20 * sizeof (CTParagraphStyleSetting));
+	i = 0;
+	
+	if ([self.useParagraphSpaceBefore state] != NSOffState) {
+		settings[i].spec = kCTParagraphStyleSpecifierParagraphSpacingBefore;
+		settings[i].valueSize = sizeof (CGFloat);
+		settings[i].value = &thirty;
+		i++;
+	}
+
+	if ([self.useLineHeight state] != NSOffState) {
+		settings[i].spec = kCTParagraphStyleSpecifierLineHeightMultiple;
+		settings[i].valueSize = sizeof (CGFloat);
+		settings[i].value = &two;
+		i++;
+	}
+	
+	if ([self.useLineSpacing state] != NSOffState) {
+		settings[i].spec = kCTParagraphStyleSpecifierLineSpacingAdjustment;
+		settings[i].valueSize = sizeof (CGFloat);
+		settings[i].value = &thirty;
+		i++;
+	}
+	
+	if ([self.useParagraphSpacing state] != NSOffState) {
+		settings[i].spec = kCTParagraphStyleSpecifierParagraphSpacing;
+		settings[i].valueSize = sizeof (CGFloat);
+		settings[i].value = &thirty;
+		i++;
+	}
+	
+	if (i == 0)
+		return NULL;
+	return CTParagraphStyleCreate(settings, i);
+}
+
 - (CTFramesetterRef)mkFramesetter
 {
 	CFMutableDictionaryRef dict;
+	CTParagraphStyleRef ps;
+	NSString *stringToUse;
 	CFAttributedStringRef cas;
 	CTFramesetterRef fs;
 	
@@ -50,13 +100,27 @@
 		&kCFCopyStringDictionaryKeyCallBacks,
 		&kCFTypeDictionaryValueCallBacks);
 	CFDictionaryAddValue(dict, kCTFontAttributeName, (CTFontRef) (self->font));
+	ps = [self mkParagraphStyle];
+	if (ps != NULL)
+		CFDictionaryAddValue(dict, kCTParagraphStyleAttributeName, ps);
+	// in order for these particular paragraph styles to take effect, we need to actually *have* paragraphs
+	stringToUse = self->str;
+	if ([self multiParagraph])
+		stringToUse = [NSString stringWithFormat:@"%@\n%@\n%@", self->str, self->str, self->str];
 	cas = CFAttributedStringCreate(NULL,
-		(CFStringRef) (self->str),
+		(CFStringRef) stringToUse,
 		dict);
 	fs = CTFramesetterCreateWithAttributedString(cas);
 	CFRelease(cas);
+	if (ps != NULL)
+		CFRelease(ps);
 	CFRelease(dict);
 	return fs;
+}
+
+- (BOOL)multiParagraph
+{
+	return ([self.useParagraphSpaceBefore state] != NSOffState) || ([self.useParagraphSpacing state] != NSOffState);
 }
 
 - (CFRange)strRange
@@ -65,6 +129,10 @@
 	
 	range.location = 0;
 	range.length = [self->str length];
+	if ([self multiParagraph]) {
+		range.length *= 3;
+		range.length += 2;
+	}
 	return range;
 }
 
@@ -232,6 +300,11 @@
 - (IBAction)checkboxToggled:(id)sender
 {
 	[self setNeedsDisplay:YES];
+}
+
+- (IBAction)paragraphStyleCheckboxToggled:(id)sender
+{
+	[self recomputeFrameSize:[self frame].size.width];
 }
 
 @end
