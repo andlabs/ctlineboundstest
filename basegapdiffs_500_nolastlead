@@ -1,0 +1,112 @@
+height mismatch at line index 3 of 5: expected 36.0 got 27.0 - 18.0 STIXNonUnicode-BoldItalic
+height mismatch at line index 4 of 6: expected 44.0 got 33.0 - 22.0 STIXNonUnicode-BoldItalic
+height mismatch at line index 7 of 9: expected 72.0 got 55.0 - 36.0 STIXNonUnicode-BoldItalic
+height mismatch at line index 15 of 17: expected 144.0 got 110.0 - 72.0 STIXNonUnicode-BoldItalic
+last line difference: ptheight-lastlead 51.0 remaining 43.0 - 36.0 STIXSizeFiveSym-Regular
+last line difference: ptheight-lastlead 103.0 remaining 85.0 - 72.0 STIXSizeFiveSym-Regular
+height mismatch at line index 7 of 9: expected 70.0 got 48.0 - 36.0 STIXSizeOneSym-Regular
+height mismatch at line index 15 of 17: expected 140.0 got 96.0 - 72.0 STIXSizeOneSym-Regular
+height mismatch at line index 7 of 9: expected 112.0 got 53.0 - 36.0 STIXSizeThreeSym-Regular
+height mismatch at line index 15 of 17: expected 224.0 got 107.0 - 72.0 STIXSizeThreeSym-Regular
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsUp-Regular
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsUp-Regular
+height mismatch at line index 3 of 5: expected 56.0 got 26.0 - 18.0 STIXSizeThreeSym-Bold
+height mismatch at line index 4 of 6: expected 68.0 got 32.0 - 22.0 STIXSizeThreeSym-Bold
+height mismatch at line index 7 of 9: expected 112.0 got 53.0 - 36.0 STIXSizeThreeSym-Bold
+height mismatch at line index 15 of 17: expected 224.0 got 107.0 - 72.0 STIXSizeThreeSym-Bold
+last line difference: ptheight-lastlead 24.0 remaining 21.0 - 18.0 Apple Braille
+last line difference: ptheight-lastlead 29.0 remaining 26.0 - 22.0 Apple Braille
+last line difference: ptheight-lastlead 47.0 remaining 43.0 - 36.0 Apple Braille
+last line difference: ptheight-lastlead 94.0 remaining 85.0 - 72.0 Apple Braille
+height mismatch at line index 7 of 9: expected 95.0 got 51.0 - 36.0 STIXIntegralsD-Regular
+height mismatch at line index 15 of 17: expected 189.0 got 102.0 - 72.0 STIXIntegralsD-Regular
+last line difference: ptheight-lastlead 24.0 remaining 21.0 - 18.0 Apple Braille Pinpoint 8 Dot
+last line difference: ptheight-lastlead 29.0 remaining 26.0 - 22.0 Apple Braille Pinpoint 8 Dot
+last line difference: ptheight-lastlead 47.0 remaining 43.0 - 36.0 Apple Braille Pinpoint 8 Dot
+last line difference: ptheight-lastlead 94.0 remaining 85.0 - 72.0 Apple Braille Pinpoint 8 Dot
+last line difference: ptheight-lastlead 39.0 remaining 35.0 - 22.0 Kokonor Regular
+last line difference: ptheight-lastlead 63.0 remaining 57.0 - 36.0 Kokonor Regular
+last line difference: ptheight-lastlead 84.0 remaining 76.0 - 48.0 Kokonor Regular
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXVariants-Regular
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXVariants-Regular
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsSm-Regular
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsSm-Regular
+last line difference: ptheight-lastlead 24.0 remaining 21.0 - 18.0 Apple Braille Outline 6 Dot
+last line difference: ptheight-lastlead 29.0 remaining 26.0 - 22.0 Apple Braille Outline 6 Dot
+last line difference: ptheight-lastlead 47.0 remaining 43.0 - 36.0 Apple Braille Outline 6 Dot
+last line difference: ptheight-lastlead 94.0 remaining 85.0 - 72.0 Apple Braille Outline 6 Dot
+height mismatch at line index 7 of 9: expected 72.0 got 55.0 - 36.0 STIXNonUnicode-Regular
+height mismatch at line index 15 of 17: expected 144.0 got 110.0 - 72.0 STIXNonUnicode-Regular
+height mismatch at line index 7 of 9: expected 90.0 got 50.0 - 36.0 STIXSizeTwoSym-Regular
+height mismatch at line index 15 of 17: expected 180.0 got 99.0 - 72.0 STIXSizeTwoSym-Regular
+height mismatch at line index 7 of 9: expected 72.0 got 55.0 - 36.0 STIXNonUnicode-Italic
+height mismatch at line index 15 of 17: expected 144.0 got 110.0 - 72.0 STIXNonUnicode-Italic
+height mismatch at line index 7 of 9: expected 112.0 got 53.0 - 36.0 STIXSizeFourSym-Regular
+height mismatch at line index 15 of 17: expected 224.0 got 107.0 - 72.0 STIXSizeFourSym-Regular
+height mismatch at line index 3 of 5: expected 56.0 got 26.0 - 18.0 STIXSizeFourSym-Bold
+height mismatch at line index 4 of 6: expected 68.0 got 32.0 - 22.0 STIXSizeFourSym-Bold
+height mismatch at line index 7 of 9: expected 112.0 got 53.0 - 36.0 STIXSizeFourSym-Bold
+height mismatch at line index 15 of 17: expected 224.0 got 107.0 - 72.0 STIXSizeFourSym-Bold
+height mismatch at line index 7 of 9: expected 95.0 got 51.0 - 36.0 STIXIntegralsUpD-Regular
+height mismatch at line index 15 of 17: expected 189.0 got 102.0 - 72.0 STIXIntegralsUpD-Regular
+last line difference: ptheight-lastlead 28.0 remaining 23.0 - 20.0 Kailasa Bold
+last line difference: ptheight-lastlead 34.0 remaining 28.0 - 24.0 Kailasa Bold
+last line difference: ptheight-lastlead 51.0 remaining 43.0 - 36.0 Kailasa Bold
+last line difference: ptheight-lastlead 102.0 remaining 85.0 - 72.0 Kailasa Bold
+height mismatch at line index 3 of 5: expected 27.0 got 25.0 - 18.0 STIXIntegralsSm-Bold
+height mismatch at line index 4 of 6: expected 33.0 got 31.0 - 22.0 STIXIntegralsSm-Bold
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsSm-Bold
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsSm-Bold
+height mismatch at line index 3 of 5: expected 27.0 got 25.0 - 18.0 STIXVariants-Bold
+height mismatch at line index 4 of 6: expected 33.0 got 31.0 - 22.0 STIXVariants-Bold
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXVariants-Bold
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXVariants-Bold
+last line difference: ptheight-lastlead 24.0 remaining 21.0 - 18.0 Apple Braille Outline 8 Dot
+last line difference: ptheight-lastlead 29.0 remaining 26.0 - 22.0 Apple Braille Outline 8 Dot
+last line difference: ptheight-lastlead 47.0 remaining 43.0 - 36.0 Apple Braille Outline 8 Dot
+last line difference: ptheight-lastlead 94.0 remaining 85.0 - 72.0 Apple Braille Outline 8 Dot
+height mismatch at line index 3 of 5: expected 45.0 got 24.0 - 18.0 STIXSizeTwoSym-Bold
+height mismatch at line index 4 of 6: expected 55.0 got 30.0 - 22.0 STIXSizeTwoSym-Bold
+height mismatch at line index 7 of 9: expected 90.0 got 50.0 - 36.0 STIXSizeTwoSym-Bold
+height mismatch at line index 15 of 17: expected 180.0 got 99.0 - 72.0 STIXSizeTwoSym-Bold
+height mismatch at line index 3 of 5: expected 47.0 got 25.0 - 18.0 STIXIntegralsUpD-Bold
+height mismatch at line index 4 of 6: expected 58.0 got 31.0 - 22.0 STIXIntegralsUpD-Bold
+height mismatch at line index 7 of 9: expected 95.0 got 51.0 - 36.0 STIXIntegralsUpD-Bold
+height mismatch at line index 15 of 17: expected 189.0 got 102.0 - 72.0 STIXIntegralsUpD-Bold
+height mismatch at line index 3 of 5: expected 19.0 got 17.0 - 14.0 GB18030 Bitmap
+height mismatch at line index 5 of 7: expected 27.0 got 23.0 - 20.0 GB18030 Bitmap
+height mismatch at line index 3 of 5: expected 27.0 got 25.0 - 18.0 STIXIntegralsUpSm-Bold
+height mismatch at line index 4 of 6: expected 33.0 got 31.0 - 22.0 STIXIntegralsUpSm-Bold
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsUpSm-Bold
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsUpSm-Bold
+height mismatch at line index 3 of 5: expected 36.0 got 27.0 - 18.0 STIXNonUnicode-Bold
+height mismatch at line index 4 of 6: expected 44.0 got 33.0 - 22.0 STIXNonUnicode-Bold
+height mismatch at line index 7 of 9: expected 72.0 got 55.0 - 36.0 STIXNonUnicode-Bold
+height mismatch at line index 15 of 17: expected 144.0 got 110.0 - 72.0 STIXNonUnicode-Bold
+height mismatch at line index 3 of 5: expected 47.0 got 25.0 - 18.0 STIXIntegralsD-Bold
+height mismatch at line index 4 of 6: expected 58.0 got 31.0 - 22.0 STIXIntegralsD-Bold
+height mismatch at line index 7 of 9: expected 95.0 got 51.0 - 36.0 STIXIntegralsD-Bold
+height mismatch at line index 15 of 17: expected 189.0 got 102.0 - 72.0 STIXIntegralsD-Bold
+last line difference: ptheight-lastlead 25.0 remaining 21.0 - 18.0 Kailasa Regular
+last line difference: ptheight-lastlead 31.0 remaining 26.0 - 22.0 Kailasa Regular
+last line difference: ptheight-lastlead 51.0 remaining 43.0 - 36.0 Kailasa Regular
+last line difference: ptheight-lastlead 102.0 remaining 85.0 - 72.0 Kailasa Regular
+height mismatch at line index 7 of 9: expected 32.0 got 31.0 - 22.0 Apple Color Emoji
+last line difference: ptheight-lastlead 32.0 remaining 30.0 - 24.0 Apple Color Emoji
+last line difference: ptheight-lastlead 63.0 remaining 60.0 - 48.0 Apple Color Emoji
+last line difference: ptheight-lastlead 95.0 remaining 90.0 - 72.0 Apple Color Emoji
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsUpSm-Regular
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsUpSm-Regular
+height mismatch at line index 3 of 5: expected 27.0 got 25.0 - 18.0 STIXIntegralsUp-Bold
+height mismatch at line index 4 of 6: expected 33.0 got 31.0 - 22.0 STIXIntegralsUp-Bold
+height mismatch at line index 7 of 9: expected 54.0 got 51.0 - 36.0 STIXIntegralsUp-Bold
+height mismatch at line index 15 of 17: expected 109.0 got 103.0 - 72.0 STIXIntegralsUp-Bold
+last line difference: ptheight-lastlead 24.0 remaining 21.0 - 18.0 Apple Braille Pinpoint 6 Dot
+last line difference: ptheight-lastlead 29.0 remaining 26.0 - 22.0 Apple Braille Pinpoint 6 Dot
+last line difference: ptheight-lastlead 47.0 remaining 43.0 - 36.0 Apple Braille Pinpoint 6 Dot
+last line difference: ptheight-lastlead 94.0 remaining 85.0 - 72.0 Apple Braille Pinpoint 6 Dot
+height mismatch at line index 3 of 5: expected 36.0 got 24.0 - 18.0 STIXSizeOneSym-Bold
+height mismatch at line index 4 of 6: expected 43.0 got 29.0 - 22.0 STIXSizeOneSym-Bold
+height mismatch at line index 7 of 9: expected 70.0 got 48.0 - 36.0 STIXSizeOneSym-Bold
+height mismatch at line index 15 of 17: expected 140.0 got 96.0 - 72.0 STIXSizeOneSym-Bold
+done - 6996/7111 pass

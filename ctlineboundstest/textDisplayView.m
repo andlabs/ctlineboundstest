@@ -309,6 +309,10 @@
 		nr.origin.y -= descent + leading;
 		nr.size = NSMakeSize(width, ascent + descent + leading);
 		[s appendFormat:@"		rect: %@\n", NSStringFromRect(nr)];
+		if (i == (n - 1)) {
+			nr.size.height = ascent + descent;
+			[s appendFormat:@"		rect without leading: %@\n", NSStringFromRect(nr)];
+		}
 		
 		cr = CTLineGetBoundsWithOptions(line, 0);
 		cr.origin.x += origins[i].x;
