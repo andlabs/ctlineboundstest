@@ -5,6 +5,7 @@
 @property (weak) IBOutlet NSButton *showBaselines;
 @property (weak) IBOutlet NSButton *showTypographicBounds;
 @property (weak) IBOutlet NSButton *show108Bounds;
+@property (weak) IBOutlet NSButton *showBaselineDiffs;
 
 @property (weak) IBOutlet NSButton *useParagraphSpaceBefore;
 @property (weak) IBOutlet NSButton *useLineHeight;
@@ -147,10 +148,16 @@
 	CGContextSetLineDash(c, 0, dashes, 2);
 }
 
+// TODO check this in pgdoc
+static const CGFloat fillColors[][3] = {
+	{ 1.0, 0.25, 0.0 },
+	{ 1.0, 0.0, 0.25 },
+};
+
 - (void)drawGuides:(CGContextRef)c for:(CTFrameRef)frame
 {
 	BOOL drawAnything;
-	BOOL showBaselines, showTypographicBounds, show108Bounds;
+	BOOL showBaselines, showTypographicBounds, show108Bounds, fillBaselineDiff;
 	CFArrayRef lines;
 	CFIndex i, n;
 	CGPoint *origins;
@@ -163,6 +170,8 @@
 	drawAnything = drawAnything || showTypographicBounds;
 	show108Bounds = [self.show108Bounds state] != NSOffState;
 	drawAnything = drawAnything || show108Bounds;
+	fillBaselineDiff = [self.showBaselineDiffs state] != NSOffState;
+	drawAnything = drawAnything || fillBaselineDiff;
 	if (!drawAnything)
 		return;
 
@@ -226,6 +235,32 @@
 		CGContextRestoreGState(c);
 	}
 	
+	if (fillBaselineDiff) {
+		CGRect r;
+		int ci;
+		CGFloat oy;
+		
+		CGContextSaveGState(c);
+		ci = 0;
+		r.origin.x = 0;
+		r.size.width = [self frame].size.width;
+		oy = [self frame].size.height;
+		for (i = 0; i < (n - 1); i++) {
+			r.size.height = origins[i].y - origins[i + 1].y;
+			r.origin.y = oy - r.size.height;
+			CGContextSetRGBFillColor(c, fillColors[ci][0], fillColors[ci][1], fillColors[ci][2], 0.375);
+			CGContextBeginPath(c);
+			CGContextAddRect(c, r);
+			CGContextFillPath(c);
+			oy -= r.size.height;
+			if (ci == 1)
+				ci = 0;
+			else
+				ci = 1;
+		}
+		CGContextRestoreGState(c);
+	}
+
 	free(origins);
 }
 
