@@ -5,7 +5,8 @@
 	NSString *str;
 	NSFont *font;
 	CTFramesetterRef framesetter;
-	CGFloat frameHeight;
+	CGFloat frameHeight;		// TODO used?
+	CGSize expectedSize;
 }
 - (void)controlTextDidChange:(NSNotification *)obj;
 - (void)changeFont:(id)sender;

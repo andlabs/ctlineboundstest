@@ -321,6 +321,8 @@ static const CGFloat fillColors[][3] = {
 	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
 	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
 	
+	[s appendFormat:@"expected frame size %@\n", NSStringFromSize(NSSizeFromCGSize(self->expectedSize))];
+	[s appendFormat:@"actual frame size %@\n", NSStringFromSize([self frame].size)];
 	heightRemaining = [self frame].size.height;
 	
 	[s appendFormat:@"%ld lines\n", n];
@@ -361,8 +363,11 @@ static const CGFloat fillColors[][3] = {
 			ht = origins[i].y - origins[i + 1].y;
 			[s appendFormat:@"	height to next: %g\n", ht];
 			heightRemaining -= ht;
-		} else
+		} else {
 			[s appendFormat:@"	remaining height: %g\n", heightRemaining];
+			[s appendFormat:@"		without leading: %g\n", heightRemaining - leading];
+			[s appendFormat:@"		without floor(leading+0.5): %g\n", heightRemaining - floor(leading + 0.5)];
+		}
 	}
 	
 	free(origins);
@@ -385,6 +390,7 @@ static const CGFloat fillColors[][3] = {
 		CGSizeMake(width, CGFLOAT_MAX),
 		&fitRange);
 	self->frameHeight = frameSize.height;
+	self->expectedSize = frameSize;
 	[self setFrameSize:NSMakeSize(width, self->frameHeight)];
 	[self refillMetricsBox];
 	[self setNeedsDisplay:YES];
