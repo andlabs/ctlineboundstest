@@ -269,6 +269,7 @@
 	CGContextRestoreGState(c);
 }
 
+// TODO baseline height differences seem to fall apart at certain widths?
 - (void)refillMetricsBox
 {
 	NSMutableString *s;
