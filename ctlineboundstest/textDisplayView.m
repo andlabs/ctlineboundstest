@@ -276,6 +276,7 @@
 	CFArrayRef lines;
 	CFIndex i, n;
 	CGPoint *origins;
+	CGFloat heightRemaining;
 
 	s = [NSMutableString new];
 	frame = [self mkFrame];
@@ -283,6 +284,8 @@
 	n = CFArrayGetCount(lines);
 	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
 	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
+	
+	heightRemaining = [self frame].size.height;
 	
 	[s appendFormat:@"%ld lines\n", n];
 	for (i = 0; i < n; i++) {
@@ -317,7 +320,9 @@
 			
 			ht = origins[i].y - origins[i + 1].y;
 			[s appendFormat:@"	height to next: %g\n", ht];
-		}
+			heightRemaining -= ht;
+		} else
+			[s appendFormat:@"	remaining height: %g\n", heightRemaining];
 	}
 	
 	free(origins);
