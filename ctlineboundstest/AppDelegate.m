@@ -27,6 +27,7 @@
 	return YES;
 }
 
+// TODO this is wonky with respect to how the text display view responds
 - (IBAction)setMagnification:(id)sender
 {
 	[self.scrollView setMagnification:[self.scrollZoom doubleValue]];

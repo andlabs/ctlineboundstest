@@ -713,6 +713,7 @@
                                     <rect key="frame" x="0.0" y="-2" width="334" height="290"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <connections>
+                                        <outlet property="metricsBox" destination="MY1-Qy-YcN" id="GDz-e9-Ado"/>
                                         <outlet property="show108Bounds" destination="FF6-oK-od2" id="B7p-x3-jCn"/>
                                         <outlet property="showBaselines" destination="1mQ-AV-q5e" id="Wuz-SW-tsI"/>
                                         <outlet property="showTypographicBounds" destination="pio-wm-ESv" id="od1-gi-8Wq"/>
@@ -852,5 +853,50 @@
             </view>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="RRe-iW-Zxs"/>
+        <window title="Metrics" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="qh5-Ck-bbd" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="120" y="64" width="276" height="378"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <view key="contentView" id="rLx-9J-es2">
+                <rect key="frame" x="0.0" y="0.0" width="276" height="378"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView wantsLayer="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Qy-TT-zj6">
+                        <rect key="frame" x="0.0" y="0.0" width="276" height="378"/>
+                        <clipView key="contentView" id="gZk-cx-S44">
+                            <rect key="frame" x="1" y="1" width="274" height="376"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" findStyle="bar" allowsUndo="YES" allowsNonContiguousLayout="YES" id="MY1-Qy-YcN">
+                                    <rect key="frame" x="0.0" y="0.0" width="274" height="376"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="274" height="376"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="tkI-j1-3Xl">
+                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="NpJ-Na-Xv5">
+                            <rect key="frame" x="259" y="1" width="16" height="376"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="7Qy-TT-zj6" secondAttribute="bottom" id="CXd-ky-A7S"/>
+                    <constraint firstItem="7Qy-TT-zj6" firstAttribute="top" secondItem="rLx-9J-es2" secondAttribute="top" id="NgY-fz-iDc"/>
+                    <constraint firstAttribute="trailing" secondItem="7Qy-TT-zj6" secondAttribute="trailing" id="ZyB-r1-nrR"/>
+                    <constraint firstItem="7Qy-TT-zj6" firstAttribute="leading" secondItem="rLx-9J-es2" secondAttribute="leading" id="qg1-e9-WYd"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="534" y="-96"/>
+        </window>
     </objects>
 </document>

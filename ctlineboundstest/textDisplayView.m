@@ -10,6 +10,8 @@
 @property (weak) IBOutlet NSButton *useLineHeight;
 @property (weak) IBOutlet NSButton *useLineSpacing;
 @property (weak) IBOutlet NSButton *useParagraphSpacing;
+
+@property (unsafe_unretained) IBOutlet NSTextView *metricsBox;
 @end
 
 @implementation textDisplayView
@@ -227,32 +229,100 @@
 	free(origins);
 }
 
-- (void)drawRect:(NSRect)r
+- (CTFrameRef)mkFrame
 {
-	CGContextRef c;
+	CGRect br;
 	CTFrameRef frame;
 	CFRange range;
 	CGPathRef path;
-	
-	c = (CGContextRef) [[NSGraphicsContext currentContext] graphicsPort];
-	
-	CGContextSaveGState(c);
-	CGContextTranslateCTM(c, 0, [self bounds].size.height);
-	CGContextScaleCTM(c, 1.0, -1.0);
-	CGContextSetTextMatrix(c, CGAffineTransformIdentity);
-	
+
+	br.origin = CGPointZero;
+	br.size.width = [self frame].size.width;
+	br.size.height = [self frame].size.height;
 	range = [self strRange];
-	path = CGPathCreateWithRect([self bounds], NULL);
+	path = CGPathCreateWithRect(br, NULL);
 	frame = CTFramesetterCreateFrame(self->framesetter,
 		range,
 		path,
 		NULL);
+	CFRelease(path);
+	return frame;
+}
+
+- (void)drawRect:(NSRect)r
+{
+	CGContextRef c;
+	CTFrameRef frame;
+	
+	c = (CGContextRef) [[NSGraphicsContext currentContext] graphicsPort];
+	
+	CGContextSaveGState(c);
+	CGContextTranslateCTM(c, 0, [self frame].size.height);
+	CGContextScaleCTM(c, 1.0, -1.0);
+	CGContextSetTextMatrix(c, CGAffineTransformIdentity);
+	
+	frame = [self mkFrame];
 	CTFrameDraw(frame, c);
 	[self drawGuides:c for:frame];
-	CFRelease(path);
 	CFRelease(frame);
 
 	CGContextRestoreGState(c);
+}
+
+- (void)refillMetricsBox
+{
+	NSMutableString *s;
+	CTFrameRef frame;
+	CFArrayRef lines;
+	CFIndex i, n;
+	CGPoint *origins;
+
+	s = [NSMutableString new];
+	frame = [self mkFrame];
+	lines = CTFrameGetLines(frame);
+	n = CFArrayGetCount(lines);
+	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
+	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
+	
+	[s appendFormat:@"%ld lines\n", n];
+	for (i = 0; i < n; i++) {
+		CTLineRef line;
+		CGFloat width, ascent, descent, leading;
+		NSRect nr;
+		CGRect cr;
+		
+		line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
+		[s appendFormat:@"line %ld\n", i];
+		nr.origin = NSPointFromCGPoint(origins[i]);
+		[s appendFormat:@"	baseline %@\n", NSStringFromPoint(nr.origin)];
+		
+		width = CTLineGetTypographicBounds(line, &ascent, &descent, &leading);
+		[s appendFormat:@"	typographic:\n"];
+		[s appendFormat:@"		width %g\n", width];
+		[s appendFormat:@"		ascent %g\n", ascent];
+		[s appendFormat:@"		descent %g\n", descent];
+		[s appendFormat:@"		leading %g\n", leading];
+		nr.origin.y -= descent + leading;
+		nr.size = NSMakeSize(width, ascent + descent + leading);
+		[s appendFormat:@"		rect: %@\n", NSStringFromRect(nr)];
+		
+		cr = CTLineGetBoundsWithOptions(line, 0);
+		cr.origin.x += origins[i].x;
+		cr.origin.y += origins[i].y;
+		nr = NSRectFromCGRect(cr);
+		[s appendFormat:@"	10.8: %@\n", NSStringFromRect(nr)];
+		
+		if (i != (n - 1)) {
+			CGFloat ht;
+			
+			ht = origins[i].y - origins[i + 1].y;
+			[s appendFormat:@"	height to next: %g\n", ht];
+		}
+	}
+	
+	free(origins);
+	CFRelease(frame);
+	[self.metricsBox setString:s];
 }
 
 - (void)recomputeFrameSize:(CGFloat)width
@@ -271,6 +341,7 @@
 		&fitRange);
 	self->frameHeight = frameSize.height;
 	[self setFrameSize:NSMakeSize(width, self->frameHeight)];
+	[self refillMetricsBox];
 	[self setNeedsDisplay:YES];
 }
 
