@@ -7,6 +7,7 @@
 
 @interface AppDelegate ()
 @property (weak) IBOutlet NSWindow *window;
+@property (weak) IBOutlet NSPanel *metricsPanel;
 @property (weak) IBOutlet NSScrollView *scrollView;
 @property (weak) IBOutlet NSSlider *scrollZoom;
 - (IBAction)setMagnification:(id)sender;
@@ -16,7 +17,17 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)note
 {
+	NSFontPanel *fp;
+	
+	fp = [[NSFontManager sharedFontManager] fontPanel:YES];
+	// make it match the metrics panel
+	[fp setStyleMask:([fp styleMask] & ~(NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask))];
+	// and show it
 	[[NSFontManager sharedFontManager] orderFrontFontPanel:self];
+	
+	// for some reason this property isn't settable in IB...
+	[fp setFloatingPanel:NO];
+	[self.metricsPanel setFloatingPanel:NO];
 	
 	[self.scrollZoom setMinValue:[self.scrollView minMagnification]];
 	[self.scrollZoom setMaxValue:[self.scrollView maxMagnification]];
