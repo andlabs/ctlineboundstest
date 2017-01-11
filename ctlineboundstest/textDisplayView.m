@@ -114,6 +114,25 @@
 	cas = CFAttributedStringCreate(NULL,
 		(CFStringRef) stringToUse,
 		dict);
+#if 0
+	// this code was used to test which characters were affected by paragraph styles
+	// it seems that a new style is applied only if the style appears on the first character of a paragraph OR if the style appears on the first character of any line except the last
+	// or in the latter case it can crash outright (TODO)
+	if ([stringToUse length] > 4) {
+		CTParagraphStyleSetting settings;
+		CGFloat threeHundred = 300.0;
+		CTParagraphStyleRef ol;
+		CFMutableAttributedStringRef mas;
+		
+		settings.spec = kCTParagraphStyleSpecifierLineSpacingAdjustment;
+		settings.valueSize = sizeof (CGFloat);
+		settings.value = &threeHundred;
+		ol = CTParagraphStyleCreate(&settings, 1);
+		mas = CFAttributedStringCreateMutableCopy(NULL, 0, cas);
+		CFAttributedStringSetAttribute(mas, CFRangeMake(5, 1), kCTParagraphStyleAttributeName, ol);
+		cas = mas;
+	}
+#endif
 	fs = CTFramesetterCreateWithAttributedString(cas);
 	CFRelease(cas);
 	if (ps != NULL)
@@ -252,18 +271,75 @@ static const CGFloat fillColors[][3] = {
 	// TODO this treats kCTParagraphStyleSpecifierParagraphSpacing like kCTParagraphStyleSpecifierParagraphSpacingBefore
 	if (fillBaselineDiff) {
 		CGRect r;
+		CGFloat finalHeight;
+		CGRect *lineRects;
 		int ci;
+		CFIndex j;		// needed to keep lineRects[] in order
 		
 		CGContextSaveGState(c);
-		ci = n % 2;
 		r.origin.x = 0;
 		r.origin.y = 0;
 		r.size.width = [self frame].size.width;
+		finalHeight = [self frame].size.height;
+		lineRects = (CGRect *) malloc(n * sizeof (CGRect));
+		j = 0;
 		for (i = n - 2; i >= 0; i--) {		// this is safe because CFIndex is signed
 			r.size.height = origins[i].y - origins[i + 1].y;
+			lineRects[j] = r;
+			j++;
+			r.origin.y += r.size.height;
+			finalHeight -= r.size.height;
+		}
+		// and do the last one
+		r.size.height = finalHeight;
+		lineRects[j] = r;
+		{
+			CTLineRef firstLine;
+			CFArrayRef runs;
+			CTRunRef firstRun;
+			CTParagraphStyleRef ps;
+			BOOL swap;
+			CGFloat val;
+			
+			firstLine = (CTLineRef) CFArrayGetValueAtIndex(lines, 0);
+			firstRun = NULL;
+			runs = CTLineGetGlyphRuns(firstLine);
+			if (CFArrayGetCount(runs) != 0)
+				firstRun = (CTRunRef) CFArrayGetValueAtIndex(runs, 0);
+			ps = NULL;
+			if (firstRun != NULL) {
+				CFDictionaryRef dict;
+				
+				dict = CTRunGetAttributes(firstRun);
+				ps = (CTParagraphStyleRef) CFDictionaryGetValue(dict, kCTParagraphStyleAttributeName);
+			}
+			
+			swap = NO;
+			if (ps != NULL) {
+				// the last paragraph has no paragraph spacing after
+				if (CTParagraphStyleGetValueForSpecifier(ps, kCTParagraphStyleSpecifierParagraphSpacing, sizeof (CGFloat), &val) == false) {
+					// TODO
+				}
+				if (val > 0)
+					swap = YES;
+			}
+			
+			// TODO this doesn't get the last two out
+			if (swap) {
+				CGSize firstSize;
+				
+				lineRects[0].origin = lineRects[n - 1].origin;
+				firstSize = lineRects[0].size;
+				lineRects[0].size = lineRects[n - 1].size;
+				for (i = 1; i < n; i++)
+					lineRects[i].origin.y += firstSize.height;
+			}
+		}
+		ci = 0;
+		for (i = 0; i < n; i++) {
 			CGContextSetRGBFillColor(c, fillColors[ci][0], fillColors[ci][1], fillColors[ci][2], 0.375);
 			CGContextBeginPath(c);
-			CGContextAddRect(c, r);
+			CGContextAddRect(c, lineRects[i]);
 			CGContextFillPath(c);
 			r.origin.y += r.size.height;
 			if (ci == 1)
@@ -271,6 +347,7 @@ static const CGFloat fillColors[][3] = {
 			else
 				ci = 1;
 		}
+		free(lineRects);
 		CGContextRestoreGState(c);
 	}
 
