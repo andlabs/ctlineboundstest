@@ -725,7 +725,7 @@
                                     </connections>
                                 </customView>
                             </subviews>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" red="0.0" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="xIU-Cp-CGe">
                             <rect key="frame" x="-100" y="-100" width="331" height="16"/>

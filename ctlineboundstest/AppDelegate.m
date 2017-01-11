@@ -3,6 +3,7 @@
 
 // TODOs
 // - run a test to see where the line differences don't match ascent+descent+leading from typographic bounds is the largest positive
+// - TODO make all the panels float
 
 @interface AppDelegate ()
 @property (weak) IBOutlet NSWindow *window;

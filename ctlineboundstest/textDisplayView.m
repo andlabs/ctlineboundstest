@@ -31,7 +31,8 @@
 	self->font = [NSFont fontWithName:@"Helvetica" size:12];
 	[[NSFontManager sharedFontManager] setSelectedFont:self->font isMultiple:NO];
 	self->framesetter = NULL;
-	self->frameHeight = 0;
+	self->inputWidth = 0;
+	self->fitRange = CFRangeMake(kCFNotFound, 0);
 	
 	[self recomputeFrameSize:[self frame].size.width];
 }
@@ -182,17 +183,28 @@ static const CGFloat fillColors[][3] = {
 	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
 	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
 	
+	// TODO also draw ascent and descent
 	if (showBaselines) {
-		CGFloat width;
+		CGFloat width, ascent, descent;
 		
 		CGContextSaveGState(c);
-		[self setStroke:c r:0.0 g:0.0 b:1.0];
 		for (i = 0; i < n; i++) {
 			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
-			width = CTLineGetTypographicBounds(line, NULL, NULL, NULL);
+			width = CTLineGetTypographicBounds(line, &ascent, &descent, NULL);
+			[self setStroke:c r:0.0 g:0.0 b:1.0];
 			CGContextBeginPath(c);
 			CGContextMoveToPoint(c, origins[i].x, origins[i].y);
 			CGContextAddLineToPoint(c, origins[i].x + width, origins[i].y);
+			CGContextStrokePath(c);
+			[self setStroke:c r:1.0 g:0.0 b:1.0];
+			CGContextBeginPath(c);
+			CGContextMoveToPoint(c, origins[i].x, origins[i].y + ascent);
+			CGContextAddLineToPoint(c, origins[i].x + width, origins[i].y + ascent);
+			CGContextStrokePath(c);
+			[self setStroke:c r:0.0 g:0.5 b:1.0];
+			CGContextBeginPath(c);
+			CGContextMoveToPoint(c, origins[i].x, origins[i].y - descent);
+			CGContextAddLineToPoint(c, origins[i].x + width, origins[i].y - descent);
 			CGContextStrokePath(c);
 		}
 		CGContextRestoreGState(c);
@@ -235,24 +247,25 @@ static const CGFloat fillColors[][3] = {
 		CGContextRestoreGState(c);
 	}
 	
+	// note: origins[i].y - origins[i + 1].y is the height of i + 1, NOT of i!
+	// TODO this assumes the last line has kCTParagraphStyleSpecifierLineSpacingAdjustment (or alternatively: this treats kCTParagraphStyleSpecifierLineSpacingAdjustment like kCTParagraphStyleSpecifierLineHeightMultiple)
+	// TODO this treats kCTParagraphStyleSpecifierParagraphSpacing like kCTParagraphStyleSpecifierParagraphSpacingBefore
 	if (fillBaselineDiff) {
 		CGRect r;
 		int ci;
-		CGFloat oy;
 		
 		CGContextSaveGState(c);
-		ci = 0;
+		ci = n % 2;
 		r.origin.x = 0;
+		r.origin.y = 0;
 		r.size.width = [self frame].size.width;
-		oy = [self frame].size.height;
-		for (i = 0; i < (n - 1); i++) {
+		for (i = n - 2; i >= 0; i--) {		// this is safe because CFIndex is signed
 			r.size.height = origins[i].y - origins[i + 1].y;
-			r.origin.y = oy - r.size.height;
 			CGContextSetRGBFillColor(c, fillColors[ci][0], fillColors[ci][1], fillColors[ci][2], 0.375);
 			CGContextBeginPath(c);
 			CGContextAddRect(c, r);
 			CGContextFillPath(c);
-			oy -= r.size.height;
+			r.origin.y += r.size.height;
 			if (ci == 1)
 				ci = 0;
 			else
@@ -288,9 +301,17 @@ static const CGFloat fillColors[][3] = {
 {
 	CGContextRef c;
 	CTFrameRef frame;
+	CGRect rr;
 	
 	c = (CGContextRef) [[NSGraphicsContext currentContext] graphicsPort];
 	
+	CGContextSaveGState(c);
+	rr.origin = CGPointZero;
+	rr.size = NSSizeToCGSize([self frame].size);
+	CGContextSetFillColorWithColor(c, [[NSColor textBackgroundColor] CGColor]);
+	CGContextFillRect(c, rr);
+	CGContextRestoreGState(c);
+
 	CGContextSaveGState(c);
 	CGContextTranslateCTM(c, 0, [self frame].size.height);
 	CGContextScaleCTM(c, 1.0, -1.0);
@@ -321,8 +342,12 @@ static const CGFloat fillColors[][3] = {
 	origins = (CGPoint *) malloc(n * sizeof (CGPoint));
 	CTFrameGetLineOrigins(frame, CFRangeMake(0, n), origins);
 	
+	[s appendFormat:@"input width %g\n", self->inputWidth];
 	[s appendFormat:@"expected frame size %@\n", NSStringFromSize(NSSizeFromCGSize(self->expectedSize))];
 	[s appendFormat:@"actual frame size %@\n", NSStringFromSize([self frame].size)];
+	[s appendFormat:@"input range %@ fit range %@\n",
+		NSStringFromRange(NSMakeRange([self strRange].location, [self strRange].length)),
+		NSStringFromRange(NSMakeRange(self->fitRange.location, self->fitRange.length))];
 	heightRemaining = [self frame].size.height;
 	
 	[s appendFormat:@"%ld lines\n", n];
@@ -361,12 +386,14 @@ static const CGFloat fillColors[][3] = {
 			CGFloat ht;
 			
 			ht = origins[i].y - origins[i + 1].y;
-			[s appendFormat:@"	height to next: %g\n", ht];
+			[s appendFormat:@"	height OF next: %g\n", ht];
+			if (i == 0)
+				[s appendFormat:@"		expected total: %g\n", ht * n];
 			heightRemaining -= ht;
 		} else {
 			[s appendFormat:@"	remaining height: %g\n", heightRemaining];
-			[s appendFormat:@"		without leading: %g\n", heightRemaining - leading];
-			[s appendFormat:@"		without floor(leading+0.5): %g\n", heightRemaining - floor(leading + 0.5)];
+			[s appendFormat:@"		with leading: %g\n", heightRemaining + leading];
+			[s appendFormat:@"		with floor(leading+0.5): %g\n", heightRemaining + floor(leading + 0.5)];
 		}
 	}
 	
@@ -379,19 +406,18 @@ static const CGFloat fillColors[][3] = {
 {
 	CGSize frameSize;
 	CFRange range;
-	CFRange fitRange;
 	
 	if (self->framesetter != NULL)
 		CFRelease(self->framesetter);
 	self->framesetter = [self mkFramesetter];
 	range = [self strRange];
+	self->inputWidth = width;
 	frameSize = CTFramesetterSuggestFrameSizeWithConstraints(self->framesetter, range,
 		NULL,
 		CGSizeMake(width, CGFLOAT_MAX),
-		&fitRange);
-	self->frameHeight = frameSize.height;
+		&(self->fitRange));
+	[self setFrameSize:NSMakeSize(width, frameSize.height)];
 	self->expectedSize = frameSize;
-	[self setFrameSize:NSMakeSize(width, self->frameHeight)];
 	[self refillMetricsBox];
 	[self setNeedsDisplay:YES];
 }
