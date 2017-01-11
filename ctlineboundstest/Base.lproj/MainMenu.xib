@@ -16,7 +16,6 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate">
             <connections>
-                <outlet property="metricsPanel" destination="qh5-Ck-bbd" id="HMi-ZA-WPi"/>
                 <outlet property="scrollView" destination="1v6-j8-s34" id="mXd-OB-5tV"/>
                 <outlet property="scrollZoom" destination="Up6-WF-Fow" id="izK-QS-bPu"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
