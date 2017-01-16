@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -683,7 +683,7 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="ctlineboundstest" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
+        <window title="ctlineboundstest" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" frameAutosaveName="mainwin" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="480" height="360"/>
@@ -704,17 +704,18 @@
                         </connections>
                     </textField>
                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" allowsMagnification="YES" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1v6-j8-s34">
-                        <rect key="frame" x="20" y="20" width="331" height="290"/>
+                        <rect key="frame" x="20" y="20" width="325" height="290"/>
                         <clipView key="contentView" id="Jcl-xO-zIG">
-                            <rect key="frame" x="1" y="1" width="329" height="288"/>
+                            <rect key="frame" x="1" y="1" width="323" height="288"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ooP-YL-O3a" customClass="textDisplayView">
-                                    <rect key="frame" x="0.0" y="-2" width="329" height="290"/>
+                                    <rect key="frame" x="0.0" y="-2" width="323" height="290"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                     <connections>
                                         <outlet property="metricsBox" destination="MY1-Qy-YcN" id="GDz-e9-Ado"/>
                                         <outlet property="show108Bounds" destination="FF6-oK-od2" id="B7p-x3-jCn"/>
+                                        <outlet property="showAlgorithm" destination="NfG-wt-fwa" id="QwV-09-DPJ"/>
                                         <outlet property="showBaselineDiffs" destination="yIc-VQ-JkX" id="piF-p0-D5Y"/>
                                         <outlet property="showBaselines" destination="1mQ-AV-q5e" id="Wuz-SW-tsI"/>
                                         <outlet property="showTypographicBounds" destination="pio-wm-ESv" id="od1-gi-8Wq"/>
@@ -732,12 +733,12 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="cjV-mo-b9e">
-                            <rect key="frame" x="314" y="1" width="16" height="288"/>
+                            <rect key="frame" x="308" y="1" width="16" height="288"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="1mQ-AV-q5e">
-                        <rect key="frame" x="357" y="294" width="73" height="18"/>
+                        <rect key="frame" x="351" y="294" width="73" height="18"/>
                         <buttonCell key="cell" type="check" title="Baseline" bezelStyle="regularSquare" imagePosition="left" inset="2" id="oRX-6Z-O3z">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -747,7 +748,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="pio-wm-ESv">
-                        <rect key="frame" x="357" y="274" width="105" height="18"/>
+                        <rect key="frame" x="351" y="274" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="Typographic" bezelStyle="regularSquare" imagePosition="left" inset="2" id="gFg-kr-bq6">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -757,7 +758,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="FF6-oK-od2">
-                        <rect key="frame" x="357" y="254" width="105" height="18"/>
+                        <rect key="frame" x="351" y="254" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="10.8 Bounds" bezelStyle="regularSquare" imagePosition="left" inset="2" id="22a-3K-ja6">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -767,17 +768,17 @@
                         </connections>
                     </button>
                     <slider verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Up6-WF-Fow">
-                        <rect key="frame" x="357" y="18" width="105" height="21"/>
+                        <rect key="frame" x="351" y="18" width="111" height="21"/>
                         <sliderCell key="cell" state="on" alignment="left" maxValue="100" doubleValue="50" tickMarkPosition="above" sliderType="linear" id="KRP-HB-CFK"/>
                         <connections>
                             <action selector="setMagnification:" target="Voe-Tx-rLC" id="ZcR-Iw-1Qm"/>
                         </connections>
                     </slider>
                     <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="I0F-mv-ciI">
-                        <rect key="frame" x="359" y="225" width="109" height="5"/>
+                        <rect key="frame" x="353" y="205" width="115" height="5"/>
                     </box>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="4At-2u-Zbh">
-                        <rect key="frame" x="357" y="203" width="105" height="18"/>
+                        <rect key="frame" x="351" y="183" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="¶ Space Top" bezelStyle="regularSquare" imagePosition="left" inset="2" id="BvK-Gt-cYX">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -787,7 +788,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="PHA-Cm-UUu">
-                        <rect key="frame" x="357" y="183" width="105" height="18"/>
+                        <rect key="frame" x="351" y="163" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="Line Height" bezelStyle="regularSquare" imagePosition="left" inset="2" id="jMe-CK-IeF">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -797,7 +798,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="QX3-ya-cyV">
-                        <rect key="frame" x="357" y="163" width="105" height="18"/>
+                        <rect key="frame" x="351" y="143" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="Line Spacing" bezelStyle="regularSquare" imagePosition="left" inset="2" id="Udd-UT-8DE">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -807,7 +808,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="gbF-zR-FEL">
-                        <rect key="frame" x="357" y="143" width="105" height="18"/>
+                        <rect key="frame" x="351" y="123" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="¶ Spacing" bezelStyle="regularSquare" imagePosition="left" inset="2" id="PQ8-mp-MtW">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -817,7 +818,7 @@
                         </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="yIc-VQ-JkX">
-                        <rect key="frame" x="357" y="234" width="105" height="18"/>
+                        <rect key="frame" x="351" y="234" width="111" height="18"/>
                         <buttonCell key="cell" type="check" title="Baseline Diffs" bezelStyle="regularSquare" imagePosition="left" inset="2" id="8Tm-fJ-DQ5">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -826,13 +827,27 @@
                             <action selector="checkboxToggled:" target="ooP-YL-O3a" id="Wi5-4O-jh1"/>
                         </connections>
                     </button>
+                    <button translatesAutoresizingMaskIntoConstraints="NO" id="NfG-wt-fwa">
+                        <rect key="frame" x="351" y="214" width="111" height="18"/>
+                        <buttonCell key="cell" type="check" title="Real Algorithm" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ab7-eq-iDZ">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxToggled:" target="ooP-YL-O3a" id="kK5-8Q-9De"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="1mQ-AV-q5e" firstAttribute="top" secondItem="7uG-Ph-jOj" secondAttribute="bottom" constant="8" symbolic="YES" id="0IG-HP-2uK"/>
                     <constraint firstItem="FF6-oK-od2" firstAttribute="top" secondItem="pio-wm-ESv" secondAttribute="bottom" constant="6" symbolic="YES" id="19I-Go-fzj"/>
+                    <constraint firstItem="I0F-mv-ciI" firstAttribute="top" secondItem="NfG-wt-fwa" secondAttribute="bottom" constant="8" symbolic="YES" id="68g-QJ-PTY"/>
+                    <constraint firstAttribute="trailing" secondItem="NfG-wt-fwa" secondAttribute="trailing" constant="20" symbolic="YES" id="6Tx-S1-0AT"/>
                     <constraint firstItem="yIc-VQ-JkX" firstAttribute="leading" secondItem="FF6-oK-od2" secondAttribute="leading" id="8vs-cI-sS9"/>
+                    <constraint firstItem="NfG-wt-fwa" firstAttribute="leading" secondItem="yIc-VQ-JkX" secondAttribute="leading" id="92Q-US-s3E"/>
                     <constraint firstItem="yIc-VQ-JkX" firstAttribute="top" secondItem="FF6-oK-od2" secondAttribute="bottom" constant="6" symbolic="YES" id="CWR-Sz-Q09"/>
                     <constraint firstAttribute="trailing" secondItem="I0F-mv-ciI" secondAttribute="trailing" constant="12" symbolic="YES" id="DwF-Ul-VAy"/>
+                    <constraint firstItem="I0F-mv-ciI" firstAttribute="leading" secondItem="NfG-wt-fwa" secondAttribute="leading" id="FmU-8h-eVP"/>
                     <constraint firstItem="pio-wm-ESv" firstAttribute="top" secondItem="1mQ-AV-q5e" secondAttribute="bottom" constant="6" symbolic="YES" id="FpY-qc-uXj"/>
                     <constraint firstAttribute="bottom" secondItem="1v6-j8-s34" secondAttribute="bottom" constant="20" symbolic="YES" id="GjA-BH-M2b"/>
                     <constraint firstAttribute="trailing" secondItem="pio-wm-ESv" secondAttribute="trailing" constant="20" symbolic="YES" id="L7s-0j-zYO"/>
@@ -846,10 +861,10 @@
                     <constraint firstItem="1mQ-AV-q5e" firstAttribute="leading" secondItem="1v6-j8-s34" secondAttribute="trailing" constant="8" symbolic="YES" id="Tqu-lz-ned"/>
                     <constraint firstItem="PHA-Cm-UUu" firstAttribute="top" secondItem="4At-2u-Zbh" secondAttribute="bottom" constant="6" symbolic="YES" id="UNU-r8-VB2"/>
                     <constraint firstItem="Up6-WF-Fow" firstAttribute="leading" secondItem="FF6-oK-od2" secondAttribute="leading" id="Voj-Hz-PW7"/>
-                    <constraint firstItem="I0F-mv-ciI" firstAttribute="top" secondItem="yIc-VQ-JkX" secondAttribute="bottom" constant="8" symbolic="YES" id="W4n-53-nbo"/>
                     <constraint firstAttribute="trailing" secondItem="7uG-Ph-jOj" secondAttribute="trailing" constant="20" symbolic="YES" id="eRX-q3-ZCS"/>
                     <constraint firstItem="1v6-j8-s34" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="esI-kY-2OM"/>
                     <constraint firstItem="FF6-oK-od2" firstAttribute="leading" secondItem="pio-wm-ESv" secondAttribute="leading" id="f2M-UH-aeK"/>
+                    <constraint firstItem="NfG-wt-fwa" firstAttribute="top" secondItem="yIc-VQ-JkX" secondAttribute="bottom" constant="6" symbolic="YES" id="h26-u1-mdd"/>
                     <constraint firstItem="4At-2u-Zbh" firstAttribute="leading" secondItem="FF6-oK-od2" secondAttribute="leading" id="h2V-Rm-fjY"/>
                     <constraint firstAttribute="trailing" secondItem="QX3-ya-cyV" secondAttribute="trailing" constant="20" symbolic="YES" id="j7h-jJ-q95"/>
                     <constraint firstItem="PHA-Cm-UUu" firstAttribute="leading" secondItem="4At-2u-Zbh" secondAttribute="leading" id="mjH-oL-rbZ"/>
@@ -862,12 +877,11 @@
                     <constraint firstAttribute="trailing" secondItem="yIc-VQ-JkX" secondAttribute="trailing" constant="20" symbolic="YES" id="uxJ-kJ-Oro"/>
                     <constraint firstItem="gbF-zR-FEL" firstAttribute="leading" secondItem="QX3-ya-cyV" secondAttribute="leading" id="wJd-sO-YrI"/>
                     <constraint firstAttribute="trailing" secondItem="FF6-oK-od2" secondAttribute="trailing" constant="20" symbolic="YES" id="xqZ-C0-dm8"/>
-                    <constraint firstItem="I0F-mv-ciI" firstAttribute="leading" secondItem="yIc-VQ-JkX" secondAttribute="leading" id="zhC-CB-UY6"/>
                 </constraints>
             </view>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="RRe-iW-Zxs"/>
-        <window title="Metrics" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="qh5-Ck-bbd" customClass="NSPanel">
+        <window title="Metrics" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="metricswin" animationBehavior="default" id="qh5-Ck-bbd" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="120" y="64" width="276" height="378"/>

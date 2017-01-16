@@ -6,6 +6,7 @@
 @property (weak) IBOutlet NSButton *showTypographicBounds;
 @property (weak) IBOutlet NSButton *show108Bounds;
 @property (weak) IBOutlet NSButton *showBaselineDiffs;
+@property (weak) IBOutlet NSButton *showAlgorithm;
 
 @property (weak) IBOutlet NSButton *useParagraphSpaceBefore;
 @property (weak) IBOutlet NSButton *useLineHeight;
@@ -155,10 +156,44 @@ static const CGFloat fillColors[][3] = {
 	{ 1.0, 0.0, 0.25 },
 };
 
+static NSMutableString *loglog = nil;
+static void addlogv(NSString *fmt, va_list ap)
+{
+	NSString *f;
+	
+	if (loglog == nil)
+		loglog = [@"<\n" mutableCopy];
+	f = [[NSString alloc] initWithFormat:fmt arguments:ap];
+	[loglog appendString:f];
+	[loglog appendString:@"\n"];
+}
+static void endlogv(NSString *fmt, va_list ap)
+{
+	addlogv(fmt, ap);
+	NSLog(@"%@>", loglog);
+	loglog = nil;
+}
+static void addlog(NSString *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	addlogv(fmt, ap);
+	va_end(ap);
+}
+static void endlog(NSString *fmt, ...)
+{
+	va_list ap;
+	
+	va_start(ap, fmt);
+	endlogv(fmt, ap);
+	va_end(ap);
+}
+
 - (void)drawGuides:(CGContextRef)c for:(CTFrameRef)frame
 {
 	BOOL drawAnything;
-	BOOL showBaselines, showTypographicBounds, show108Bounds, fillBaselineDiff;
+	BOOL showBaselines, showTypographicBounds, show108Bounds, fillBaselineDiff, showAlgorithm;
 	CFArrayRef lines;
 	CFIndex i, n;
 	CGPoint *origins;
@@ -173,6 +208,8 @@ static const CGFloat fillColors[][3] = {
 	drawAnything = drawAnything || show108Bounds;
 	fillBaselineDiff = [self.showBaselineDiffs state] != NSOffState;
 	drawAnything = drawAnything || fillBaselineDiff;
+	showAlgorithm = [self.showAlgorithm state] != NSOffState;
+	drawAnything = drawAnything || showAlgorithm;
 	if (!drawAnything)
 		return;
 
@@ -260,12 +297,92 @@ static const CGFloat fillColors[][3] = {
 		r.origin.y = 0;
 		r.size.width = [self frame].size.width;
 		for (i = n - 2; i >= 0; i--) {		// this is safe because CFIndex is signed
+			// TODO NOTE THAT THIS IS WRONG
+			// this assumes that if the font is the same, all line ascents will be
+			// but      oriigns[i].y - origins[i + 1].y != ascents[i  ] + descents[i] + leadings[i]
+			// instead, oriigns[i].y - origins[i + 1].y != ascents[i+1] + descents[i] + leadings[i]
+			// this is also why it seemed like they aligned to the next line
 			r.size.height = origins[i].y - origins[i + 1].y;
 			CGContextSetRGBFillColor(c, fillColors[ci][0], fillColors[ci][1], fillColors[ci][2], 0.375);
 			CGContextBeginPath(c);
 			CGContextAddRect(c, r);
 			CGContextFillPath(c);
 			r.origin.y += r.size.height;
+			if (ci == 1)
+				ci = 0;
+			else
+				ci = 1;
+		}
+		CGContextRestoreGState(c);
+	}
+	
+	// TODO this still does not handle character-wrapped words properly
+	if (showAlgorithm) {
+		CGRect r;
+		int ci;
+		CGFloat curbl;
+		
+		CGContextSaveGState(c);
+		ci = n % 2;
+		r.origin.x = 0;
+		r.origin.y = 0;
+		r.size.width = [self frame].size.width;
+		curbl = [self frame].size.height;
+		for (i = 0; i < n; i++) {
+			CTLineRef line;
+			CGRect bounds, boundsNoLeading;
+			CGFloat ascent, descent, leading;
+			
+			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
+			bounds = CTLineGetBoundsWithOptions(line, 0);
+			boundsNoLeading = CTLineGetBoundsWithOptions(line,
+				kCTLineBoundsExcludeTypographicLeading);
+			
+			// this is equivalent to boundsNoLeading.size.height + boundsNoLeading.origin.y (manually verified)
+			ascent = bounds.size.height + bounds.origin.y;
+			descent = -boundsNoLeading.origin.y;
+			// TODO does this preserve leading sign?
+			leading = -bounds.origin.y - descent;
+			
+			ascent = floor(ascent + 0.5);
+			descent = floor(descent + 0.5);
+			if (leading > 0)
+				leading = floor(leading + 0.5);
+			
+			r.origin.y = origins[i].y - descent - leading;
+			r.size.height = ascent + descent + leading;
+			CGContextSetRGBFillColor(c, fillColors[ci][0], fillColors[ci][1], fillColors[ci][2], 0.375);
+			CGContextBeginPath(c);
+			CGContextAddRect(c, r);
+			CGContextFillPath(c);
+			
+			curbl -= ascent;
+			if (curbl != origins[i].y)
+				NSLog(@"%@ %ld/%ld expected %g got %g", self->font, i, n, origins[i].y, curbl);
+			curbl -= descent + leading;
+			
+/*
+			if (i < (n - 1)) {
+				CGFloat so;
+				CGFloat a, d, l;
+				
+				// TODO wait, which is correct, this one or the one above?
+				so = origins[i].y - origins[i + 1].y;
+				if (r.size.height != so) {
+					addlog(@"%@ %ld/%ld expected %g got %g", self->font, i, n, so, r.size.height);
+					addlog(@"%@ %@ %g %g", NSStringFromRect(bounds), NSStringFromRect(boundsNoLeading), descent, leading);
+					addlog(@"%@", NSStringFromRect(r));
+					CTLineGetTypographicBounds(line, &a, &d, &l);
+					a = floor(a + 0.5);
+					d = floor(d + 0.5);
+					if (l > 0)
+						l = floor(l + 0.5);
+					endlog(@"a/d/l %g/%g/%g %g/%g/%g",
+						ascent, descent, leading,
+						a, d, l);
+				}
+*/
+				
 			if (ci == 1)
 				ci = 0;
 			else
