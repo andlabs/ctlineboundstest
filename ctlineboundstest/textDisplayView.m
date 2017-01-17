@@ -54,8 +54,10 @@
 {
 	CTParagraphStyleSetting settings[20];
 	size_t i;
-	CGFloat thirty = 30.0;
 	CGFloat two = 2.0;
+	CGFloat thirty = 30.0;
+	CGFloat sixty = 60.0;
+	CGFloat ninety = 90.0;
 	
 	memset(settings, 0, 20 * sizeof (CTParagraphStyleSetting));
 	i = 0;
@@ -77,20 +79,31 @@
 	if ([self.useLineSpacing state] != NSOffState) {
 		settings[i].spec = kCTParagraphStyleSpecifierLineSpacingAdjustment;
 		settings[i].valueSize = sizeof (CGFloat);
-		settings[i].value = &thirty;
+		settings[i].value = &sixty;
 		i++;
 	}
 	
 	if ([self.useParagraphSpacing state] != NSOffState) {
 		settings[i].spec = kCTParagraphStyleSpecifierParagraphSpacing;
 		settings[i].valueSize = sizeof (CGFloat);
-		settings[i].value = &thirty;
+		settings[i].value = &ninety;
 		i++;
 	}
 	
 	if (i == 0)
 		return NULL;
 	return CTParagraphStyleCreate(settings, i);
+}
+
+- (NSString *)stringToUse
+{
+	NSString *stringToUse;
+	
+	// in order for these particular paragraph styles to take effect, we need to actually *have* paragraphs
+	stringToUse = self->str;
+	if ([self multiParagraph])
+		stringToUse = [NSString stringWithFormat:@"%@\n%@\n%@", self->str, self->str, self->str];
+	return stringToUse;
 }
 
 - (CTFramesetterRef)mkFramesetter
@@ -108,10 +121,7 @@
 	ps = [self mkParagraphStyle];
 	if (ps != NULL)
 		CFDictionaryAddValue(dict, kCTParagraphStyleAttributeName, ps);
-	// in order for these particular paragraph styles to take effect, we need to actually *have* paragraphs
-	stringToUse = self->str;
-	if ([self multiParagraph])
-		stringToUse = [NSString stringWithFormat:@"%@\n%@\n%@", self->str, self->str, self->str];
+	stringToUse = [self stringToUse];
 	cas = CFAttributedStringCreate(NULL,
 		(CFStringRef) stringToUse,
 		dict);
@@ -332,6 +342,9 @@ static void endlog(NSString *fmt, ...)
 			CTLineRef line;
 			CGRect bounds, boundsNoLeading;
 			CGFloat ascent, descent, leading;
+			CFArrayRef runs;
+			CTRunRef firstRun;
+			__block CTParagraphStyleRef ps;
 			
 			line = (CTLineRef) CFArrayGetValueAtIndex(lines, i);
 			bounds = CTLineGetBoundsWithOptions(line, 0);
@@ -348,6 +361,97 @@ static void endlog(NSString *fmt, ...)
 			descent = floor(descent + 0.5);
 			if (leading > 0)
 				leading = floor(leading + 0.5);
+			
+			ps = NULL;
+			runs = CTLineGetGlyphRuns(line);
+			if (CFArrayGetCount(runs) > 0) {
+				CFDictionaryRef dict;
+				
+				firstRun = (CTRunRef) CFArrayGetValueAtIndex(runs, 0);
+				dict = CTRunGetAttributes(firstRun);
+				if (dict != NULL)
+					ps = (CTParagraphStyleRef) CFDictionaryGetValue(dict, kCTParagraphStyleAttributeName);
+			}
+			if (ps != NULL) {
+				CGFloat (^get)(CTParagraphStyleSpecifier spec);
+				CGFloat lineHeightMultiple;
+				CGFloat maximumLineHeight;
+				CGFloat minimumLineHeight;
+				CGFloat minimumLineSpacing;
+				CGFloat maximumLineSpacing;
+				CGFloat lineSpacingAdjustment;
+				CGFloat paragraphSpacing;
+				CGFloat paragraphSpacingBefore;
+				CGFloat lineHeight;
+				CFRange cfrange;
+				NSRange lineRange;
+				NSUInteger paraStart, paraEnd;
+				
+				get = ^(CTParagraphStyleSpecifier spec){
+					CGFloat ret;
+					
+					// don't check errors; we want the default of 0 on unknown specifier
+					CTParagraphStyleGetValueForSpecifier(ps, spec, sizeof (CGFloat), &ret);
+					return ret;
+				};
+				lineHeightMultiple = get(kCTParagraphStyleSpecifierLineHeightMultiple);
+				if (lineHeightMultiple < 0)
+					lineHeightMultiple = 0;
+				maximumLineHeight = get(kCTParagraphStyleSpecifierMaximumLineHeight);
+				if (maximumLineHeight < 0)
+					maximumLineHeight = 0;
+				minimumLineHeight = get(kCTParagraphStyleSpecifierMinimumLineHeight);
+				if (minimumLineHeight < 0)
+					minimumLineHeight = 0;
+				minimumLineSpacing = get(kCTParagraphStyleSpecifierMinimumLineSpacing);
+				if (minimumLineSpacing != 0)
+					if (leading < minimumLineSpacing)
+						leading = minimumLineSpacing;
+				maximumLineSpacing = get(kCTParagraphStyleSpecifierMaximumLineSpacing);
+				lineSpacingAdjustment = get(kCTParagraphStyleSpecifierLineSpacingAdjustment);
+				paragraphSpacing = get(kCTParagraphStyleSpecifierParagraphSpacing);
+				if (paragraphSpacing <= 0)
+					paragraphSpacing = 0;
+				paragraphSpacingBefore = get(kCTParagraphStyleSpecifierParagraphSpacingBefore);
+				if (paragraphSpacingBefore <= 0)
+					paragraphSpacingBefore = 0;
+				if (lineHeightMultiple > 0) {
+					// line height multiples grow the line above the baseline
+					// TODO explain the logic here
+					// lineHeightMultiple *= ascent + descent
+					// ascent = ascent - ((ascent + descent) - lineHeightMultiple)
+					lineHeightMultiple *= ascent + descent;
+					ascent = ascent - ((ascent + descent) - lineHeightMultiple);
+				}
+				lineHeight = ascent + descent;
+				if (maximumLineHeight > 0)
+					if ((ascent + descent) > maximumLineHeight)
+						// TODO explain the logic here
+						// ascent = ascent - ((ascent + descent) - maximumLineHeight)
+						ascent = maximumLineHeight - descent;
+				if (minimumLineHeight > 0)
+					if (minimumLineHeight > lineHeight)
+						// TODO really explain the logic here
+						// TODO copy the formula
+						// TODO in particular explain the use of the old lineHeight
+						// TODO isn't it used in the fomrula?
+						ascent = minimumLineHeight - descent;
+				// TODO simplify this somehow? also copy the formula
+				lineSpacingAdjustment += leading;
+				if (leading < lineSpacingAdjustment)
+					leading = lineSpacingAdjustment;
+				if (leading > maximumLineSpacing)
+					leading = maximumLineSpacing;
+				
+				cfrange = CTLineGetStringRange(line);
+				lineRange.location = cfrange.location;
+				lineRange.length = cfrange.length;
+				[[self stringToUse] getParagraphStart:&paraStart end:&paraEnd contentsEnd:NULL forRange:lineRange];
+				if (lineRange.location != 0 && lineRange.location == paraStart)
+					ascent += paragraphSpacingBefore;
+				if (NSMaxRange(lineRange) == paraEnd)
+					descent += paragraphSpacing;
+			}
 			
 			r.origin.y = origins[i].y - descent - leading;
 			r.size.height = ascent + descent + leading;
@@ -388,6 +492,7 @@ static void endlog(NSString *fmt, ...)
 			else
 				ci = 1;
 		}
+		// TODO check that curbl - leading is at where we expect it to be
 		CGContextRestoreGState(c);
 	}
 
