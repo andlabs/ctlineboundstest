@@ -2,8 +2,8 @@
 #import "AppDelegate.h"
 
 // TODOs
-// - run a test to see where the line differences don't match ascent+descent+leading from typographic bounds is the largest positive
-// - TODO make all the panels float
+// - add options to check the other paragraph styles that we worry about?
+// - allow having a paragraph style on the second line of the second paragraph to see what happens
 
 @interface AppDelegate ()
 @property (weak) IBOutlet NSWindow *window;
